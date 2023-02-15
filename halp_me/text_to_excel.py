@@ -16,18 +16,20 @@ Step 3:
 """
 
 
-def convert_to_excel( file_path ):
+def convert_to_excel( file_path):
+    os.chdir(file_path)
+    sim_text_files = glob.glob( '*' )
+    data_list = []
+    for i, file in enumerate(sim_text_files):
+        data = pd.read_csv( file, sep='\t', header=None, names=['time','voltage'] )
+        data.to_excel( file+'.xlsx', index=False )
+        data_list.append(data)
+        
+    return data_list
 
-# for i, file in enumerate(sim_text_files):
-#     print(i)
-#     print(file)
-#     data = pd.read_csv( file, sep='\t', header=None, names=['time','voltage'] )
-#     data.to_excel( file+'.xlsx', index=False )
-#     sim_data_list.append(data)
-
-    data = pd.read_csv( file_path, sep='\t', header=None, names=['Time','Voltage'] )
-    data.to_excel( file_path+'.xlsx', index=False )
-    return data
+    # data = pd.read_csv( file_path, sep='\t', header=None, names=['Time','Voltage'] )
+    # data.to_excel( file_path+'.xlsx', index=False )
+    # return data
 
 def get_all_excel_files( folder_path ):
     os.chdir( folder_path )
@@ -41,13 +43,18 @@ def convert_to_df( file_path ):
 if __name__ == '__main__':
     
     #convert text to excel
-    sim_data_dir = '/FullWave/Sim_Data'
+    sim_data_dir = '/HalfWave/SIM_Data/'
     cwd = os.getcwd()
+    print(cwd)
     sim_folder = cwd + sim_data_dir
 
+    #convert text to excel
+    data = convert_to_excel(sim_folder)
+    
+    
+    #changes to directory with text files
     os.chdir( cwd+sim_data_dir)
     sim_text_files = glob.glob( '*' )
-
     sim_excel = get_all_excel_files(sim_folder)
     sim_data_list = []
     
